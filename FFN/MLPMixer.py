@@ -99,7 +99,6 @@ class MLPMixer(nn.Module):
 
 model = MLPMixer(image_size=28, channels=1, patch_size=7, dim=32, depth=4, token_dim=64, channel_dim=128).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-#optimizer = torch.optim.SGD(model.parameters(), lr=0.005, momentum=0.5)
 criterion = nn.CrossEntropyLoss()
 
 def train(epoch, log_interval=200):
