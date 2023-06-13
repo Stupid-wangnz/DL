@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from typing import Optional
 import torch.optim as optim
 
-
+torchvision.models.resnet18()
 if torch.cuda.is_available():
     device = torch.device('cuda')
 else:
@@ -33,70 +33,63 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
+# 4 3 32 32
+
+class LambdaLayer(nn.Module):
+    def __init__(self, lambd):
+        super(LambdaLayer, self).__init__()
+        self.lambd = lambd
+
+    def forward(self, x):
+        return self.lambd(x)
+
 class BasicBlock(nn.Module):
     def __init__(self, in_channels, out_channels, stride, downsample : Optional[nn.Module] = None) :
         super().__init__()
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.ReLU()
 
-        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1)
         self.bn1 = nn.BatchNorm2d(out_channels)
-        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1)
         self.bn2 = nn.BatchNorm2d(out_channels)
         self.downsample = downsample
 
     def forward(self, x):
         _x = x
-        out = self.relu(self.bn1(self.conv1(x)))
+        out = F.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
+
         if self.downsample is not None:
             _x = self.downsample(x)
 
-        out = F.relu(_x + out)
+        out = self.relu(_x + out)
         
         return out
-
-# 4 3 32 32
 
 class ResNet(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False) # 3 32 32 -> 64 32 32
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=2, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
+        self.relu = nn.ReLU(inplace=True)
 
         self.conv2_1 = BasicBlock(64, 64, 1)
         self.conv2_2 = BasicBlock(64, 64, 1)
 
         self.conv3_1 = BasicBlock(64, 128, 2,
-                                downsample=nn.Sequential(
-                                    nn.Conv2d(64, 128, 1, 2, bias=False),
-                                    nn.BatchNorm2d(128)
-                                ))
-        # 64 32 32 -> 128, 16, 16
+                                downsample=LambdaLayer(lambda x:
+                                            F.pad(x[:, :, ::2, ::2], (0, 0, 0, 0, 128//4, 128//4), "constant", 0))
+                                )
         self.conv3_2 = BasicBlock(128, 128, 1)
+
         self.conv4_1 = BasicBlock(128, 256, 2,
-                                downsample=nn.Sequential(
-                                    nn.Conv2d(128, 256, 1, 2, bias=False),
-                                    nn.BatchNorm2d(256)
-                                ))
-        # 128, 16, 16 -> 256, 8, 8
+                                downsample=LambdaLayer(lambda x:
+                                            F.pad(x[:, :, ::2, ::2], (0, 0, 0, 0, 256//4, 256//4), "constant", 0))
+                                )
         self.conv4_2 = BasicBlock(256, 256, 1)
 
-        self.conv5_1 = BasicBlock(256, 512, 2, 
-                                downsample=nn.Sequential(
-                                    nn.Conv2d(256, 512, 1, 2, bias=False),
-                                    nn.BatchNorm2d(512)
-                                  ))
-        # 256, 8, 8 -> 512, 4, 4
-        self.conv5_2 = BasicBlock(512, 512, 1)
-        #self.conv5_2 = BasicBlock(512, 512, 1)
-        #512,2,2
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-
-        self.fc = nn.Linear(512, 100)
-        #self.fc1 = nn.Linear(512, 100)
-        #self.fc2 = nn.Linear(100, 10)
-
-        self.relu = nn.ReLU(inplace=True)
+        self.fc = nn.Linear(256, 10)
     def forward(self, x):       
         x = self.conv1(x)
         x = self.relu(self.bn1(x))
@@ -107,19 +100,9 @@ class ResNet(nn.Module):
         x = self.conv3_1(x)
         x = self.conv3_2(x)
 
-        x = self.conv4_1(x)
-        x = self.conv4_2(x)
-
-        x = self.conv5_1(x)
-        x = self.conv5_2(x)
-
         x = self.avgpool(x)
         x = torch.flatten(x, 1) # flatten all dimensions except batch
-        
         x = self.fc(x)
-        #x = self.relu(self.fc1(x))
-        #x = F.softmax(self.fc2(x), dim = 1)
-        #x = F.softmax(x, dim=1)
         return x
 
 net = ResNet()

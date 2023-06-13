@@ -70,18 +70,18 @@ class DenseBlock(nn.Module):
     
 # 32*32 -> 32*32 -> 16*16 -> 8*8 -> 4*4
 class DenseNet(nn.Module):
-    def __init__(self, first_features, g=32, bn_size=4, drop_rate=0.2, num_classes=10):
+    def __init__(self, g=32, bn_size=4, drop_rate=0.2, num_classes=10):
         super().__init__()
         # not need the max pool
         self.conv_ = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=first_features, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(first_features),
+            nn.Conv2d(in_channels=3, out_channels=64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(64),
             nn.ReLU(inplace=True)
         )
         self.blocks_transition = nn.ModuleList([]) 
         #DenseNet121
-        layer_args = (6, 12, 24, 16)
-        features = first_features
+        layer_args = (3, 6, 12, 8)
+        features = 64
         for i, layers in enumerate(layer_args):
             self.blocks_transition.append(DenseBlock(layers=layers, input_size=features, g=g, bn_size=bn_size, drop_rate=drop_rate))
             features += layers * g
@@ -124,7 +124,7 @@ class DenseNet(nn.Module):
         return out
 
 
-net = DenseNet(first_features=64, g=32, bn_size=4, drop_rate=0.2, num_classes=10)
+net = DenseNet(g=32, bn_size=4, drop_rate=0.2, num_classes=10)
 model = net.to(device)
 learn_rate = 0.001
 

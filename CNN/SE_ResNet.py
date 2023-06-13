@@ -33,6 +33,14 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
+class LambdaLayer(nn.Module):
+    def __init__(self, lambd):
+        super(LambdaLayer, self).__init__()
+        self.lambd = lambd
+
+    def forward(self, x):
+        return self.lambd(x)
+
 class BasicBlock_se(nn.Module):
     def __init__(self, in_channels, out_channels, stride, ratio=4, downsample : Optional[nn.Module] = None) :
         super().__init__()
@@ -66,46 +74,32 @@ class BasicBlock_se(nn.Module):
 
 # 4 3 32 32
 
-class ResNet(nn.Module):
-    def __init__(self, num_classes=10):
+class SE_ResNet(nn.Module):
+    def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False) # 3 32 32 -> 64 32 32
         self.bn1 = nn.BatchNorm2d(64)
-
+        self.relu = nn.ReLU(inplace=True)
         self.conv2_1 = BasicBlock_se(64, 64, 1)
         self.conv2_2 = BasicBlock_se(64, 64, 1)
 
         self.conv3_1 = BasicBlock_se(64, 128, 2,
-                                downsample=nn.Sequential(
-                                    nn.Conv2d(64, 128, 1, 2, bias=False),
-                                    nn.BatchNorm2d(128)
-                                ))
+                                downsample=LambdaLayer(lambda x:
+                                            F.pad(x[:, :, ::2, ::2], (0, 0, 0, 0, 128//4, 128//4), "constant", 0))
+                                )
         # 64 32 32 -> 128, 16, 16
         self.conv3_2 = BasicBlock_se(128, 128, 1)
+        
         self.conv4_1 = BasicBlock_se(128, 256, 2,
-                                downsample=nn.Sequential(
-                                    nn.Conv2d(128, 256, 1, 2, bias=False),
-                                    nn.BatchNorm2d(256)
-                                ))
-        # 128, 16, 16 -> 256, 8, 8
+                                downsample=LambdaLayer(lambda x:
+                                            F.pad(x[:, :, ::2, ::2], (0, 0, 0, 0, 128//4, 128//4), "constant", 0))
+                                )
         self.conv4_2 = BasicBlock_se(256, 256, 1)
 
-        self.conv5_1 = BasicBlock_se(256, 512, 2, 
-                                downsample=nn.Sequential(
-                                    nn.Conv2d(256, 512, 1, 2, bias=False),
-                                    nn.BatchNorm2d(512)
-                                  ))
-        # 256, 8, 8 -> 512, 4, 4
-        self.conv5_2 = BasicBlock_se(512, 512, 1)
-        #self.conv5_2 = BasicBlock(512, 512, 1)
-        #512,2,2
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
 
-        self.fc = nn.Linear(512, num_classes)
-        #self.fc1 = nn.Linear(512, 100)
-        #self.fc2 = nn.Linear(100, 10)
+        self.fc = nn.Linear(256, 10)
 
-        self.relu = nn.ReLU(inplace=True)
     def forward(self, x):       
         x = self.conv1(x)
         x = self.relu(self.bn1(x))
@@ -119,19 +113,14 @@ class ResNet(nn.Module):
         x = self.conv4_1(x)
         x = self.conv4_2(x)
 
-        x = self.conv5_1(x)
-        x = self.conv5_2(x)
-
         x = self.avgpool(x)
         x = torch.flatten(x, 1) # flatten all dimensions except batch
         
         x = self.fc(x)
-        #x = self.relu(self.fc1(x))
-        #x = F.softmax(self.fc2(x), dim = 1)
-        #x = F.softmax(x, dim=1)
+        
         return x
 
-net = ResNet()
+net = SE_ResNet()
 model = net.to(device)
 learn_rate = 0.001
 
