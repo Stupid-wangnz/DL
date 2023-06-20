@@ -57,14 +57,92 @@ Generator(
 
 由此可见，在生成器的输入中，每一个位置上的输入控制了图像中不同部分的明暗，从而需要由许多随机数一起组合来控制图像的具体内容，以上面第三组图像和第五组图像中的第二张生成的图像为例，一个更像鞋子，一个更像外套，可见需要多组随机数组合一起才能控制整张图像内容，单独一个随机数对图像改变并不大。
 
+## 用卷积实现生成器和判别器：DCGAN
+
+### 自己实现的DCGAN代码：
+
+**判别器中就是简单的卷积层，最后激活函数的Sigmoid来判别输入是否是真实图像；在生成器中使用逆卷积层，将输入逐步放大，最终放大到图像大小。**
+
+注意在这里为了代码实现，将FashionMNIST图像大小放大到32*32.
+
+```python
+class CNNDiscriminator(nn.Module):
+    def __init__(self, features=64):
+        super(CNNDiscriminator, self).__init__()
+        self.model = nn.Sequential(
+            nn.Conv2d(1, features, 4, 2, 1),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            nn.Conv2d(features, features*2, 4, 2, 1),
+            nn.BatchNorm2d(features*2),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            nn.Conv2d(features*2, features*4, 4, 2, 1),
+            nn.BatchNorm2d(features*4),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            nn.Conv2d(features*4, 1, kernel_size=4, stride=2, padding=0),
+            nn.Sigmoid(),
+        )
+    def forward(self, img):
+        validity = self.model(img)
+        return validity.view(-1, 1)
+
+class CNNGenerator(nn.Module):
+    def __init__(self, latent_dim=100, features=64):
+        super(CNNGenerator, self).__init__()
+        self.model = nn.Sequential(
+            nn.ConvTranspose2d(latent_dim, features*8, 4, 1, 0),
+            nn.ReLU(True),
+
+            # Transpose block 3
+            nn.ConvTranspose2d(features*8, features*4, kernel_size=4, stride=2, padding=1),
+            nn.BatchNorm2d(features*4),
+            nn.ReLU(),
+
+            # Transpose block 4
+            nn.ConvTranspose2d(features*4, features*2, kernel_size=4, stride=2, padding=1),
+            nn.BatchNorm2d(features*2),
+            nn.ReLU(),
+
+            # Last transpose block (different)
+            nn.ConvTranspose2d(features*2, 1, kernel_size=4, stride=2, padding=1),
+            nn.Tanh(),
+        )
+
+    def forward(self, z):
+        z = z.view(z.size(0), z.size(1), 1, 1)
+        img = self.model(z)
+        return img
+```
+
+### 训练结果：
+
+<img src="E:\DeepLearning\DL\GAN\img\img.png" alt="img" style="zoom:67%;" />
+
+<img src="E:\DeepLearning\DL\GAN\img\img1.png" alt="img" style="zoom:67%;" />
+
+<img src="E:\DeepLearning\DL\GAN\img\img2.png" alt="img" style="zoom:67%;" />
+
+对比生成器和判别器的损失函数可以发现，判别器的损失值一直较小，而生成器损失在震荡中逐渐的增大，可见GAN还是非常难以训练。
+
+### 自定义随机数：
+
+可见，DCGAN生成的图像更加清晰，细节更加具体，但是有部分图像完全扭曲，可能是迭代次数太少了。
+
+![img](E:\DeepLearning\DL\GAN\img\img3.png)
+
+**针对自定义的100个随机数，自由挑选5个随机数，查看调整每个随机数时，生成图像的变化：**
+
+<img src="E:\DeepLearning\DL\GAN\img\image-20230620213820299.png" alt="image-20230620213820299" style="zoom:67%;" />
+
+对比于简单的GAN网络，DCGAN生成的图像更加完整且清晰。可以清楚的发现，和前面分析的GAN一样，同样是由不同随机数来控制不同区域，从而组合生成一幅完整的图像，但是DCGAN不同随机数的影响更大。
+
+**如第一组图像中，该随机数控制的是图像左侧区域，在衣物中就是左侧袖子的长度，在最后一幅图像中能清晰发现，随机数越大，衣服的袖子越小，所以对于衣服而言，该随机数较小能生成更容易欺骗判别器的图像**；
+
+**在第四组图像中能发现该随机数对生成物体的影响非常大，当随机数较小时还是正常衣物的形状，但是当值较大的时候生成的图像明显不符合衣物的形状，可见DCGAN对随机数比较敏感**；
+
+**在第五组图像中，该随机数控制的则是整体物件的长度，可以发现随机数越小，生成图像中的衣服越修长，随机数越大，生成图像中的衣物越宽大，这是在前面实现的GAN中没有发现的。**
 
 
-<img src="E:\DeepLearning\DL\GAN\img\image-20230620161255073.png" alt="image-20230620161255073" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\GAN\img\image-20230620161418413.png" alt="image-20230620161418413" style="zoom:67%;" />
-
-<img src="E:\DeepLearning\DL\GAN\img\image-20230620161230404.png" alt="image-20230620161230404" style="zoom:67%;" />
-
-
-
-![image-20230611000228350](E:\DeepLearning\DL\GAN\img\image-20230611000228350.png)
