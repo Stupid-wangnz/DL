@@ -13,27 +13,6 @@ import torch.optim as optim
 import torchvision.models.densenet
 torch.cuda.empty_cache()
 
-if torch.cuda.is_available():
-    device = torch.device('cuda')
-else:
-    device = torch.device('cpu')
-
-transform = transforms.Compose(
-[transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-
-batch_size = 32
-
-trainset = torchvision.datasets.CIFAR10(root='/codes/DeepLearning/DL/CNN/data', train=True,
-                                        download=False, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
-                                          shuffle=True, num_workers=2)
-
-testset = torchvision.datasets.CIFAR10(root='/codes/DeepLearning/DL/CNN/data', train=False,
-                                       download=False, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
-                                         shuffle=False, num_workers=2)
-
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
@@ -121,6 +100,7 @@ class DenseNet(nn.Module):
         _x = F.avg_pool2d(_x, 4, stride=1)
         _x = _x.view(_x.size(0), -1)
         out = self.fc(_x)
+<<<<<<< Updated upstream
         return out
 
 
@@ -186,3 +166,6 @@ if __name__ == "__main__":
 
     PATH = '/codes/DeepLearning/DL/CNN/cifar_densenet.pth'
     torch.save(net.state_dict(), PATH)
+=======
+        return out
+>>>>>>> Stashed changes

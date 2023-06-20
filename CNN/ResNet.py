@@ -8,6 +8,7 @@ import torch.nn.functional as F
 from typing import Optional
 import torch.optim as optim
 
+<<<<<<< Updated upstream
 torchvision.models.resnet18()
 if torch.cuda.is_available():
     device = torch.device('cuda')
@@ -30,6 +31,8 @@ testset = torchvision.datasets.CIFAR10(root='/codes/DeepLearning/DL/CNN/data', t
 testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
                                          shuffle=False, num_workers=2)
 
+=======
+>>>>>>> Stashed changes
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
@@ -65,7 +68,10 @@ class BasicBlock(nn.Module):
         out = self.relu(_x + out)
         
         return out
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 class ResNet(nn.Module):
     def __init__(self):
         super().__init__()
@@ -77,6 +83,7 @@ class ResNet(nn.Module):
         self.conv2_2 = BasicBlock(64, 64, 1)
 
         self.conv3_1 = BasicBlock(64, 128, 2,
+<<<<<<< Updated upstream
                                 downsample=LambdaLayer(lambda x:
                                             F.pad(x[:, :, ::2, ::2], (0, 0, 0, 0, 128//4, 128//4), "constant", 0))
                                 )
@@ -86,6 +93,19 @@ class ResNet(nn.Module):
                                 downsample=LambdaLayer(lambda x:
                                             F.pad(x[:, :, ::2, ::2], (0, 0, 0, 0, 256//4, 256//4), "constant", 0))
                                 )
+=======
+                                downsample=nn.Sequential(
+                                    nn.Conv2d(64, 128, 1, 2, bias=False),
+                                    nn.BatchNorm2d(128)
+                                ))
+        self.conv3_2 = BasicBlock(128, 128, 1)
+
+        self.conv4_1 = BasicBlock(128, 256, 2,
+                                downsample=nn.Sequential(
+                                    nn.Conv2d(128, 256, 1, 2, bias=False),
+                                    nn.BatchNorm2d(256)
+                                ))
+>>>>>>> Stashed changes
         self.conv4_2 = BasicBlock(256, 256, 1)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
@@ -100,6 +120,7 @@ class ResNet(nn.Module):
         x = self.conv3_1(x)
         x = self.conv3_2(x)
 
+<<<<<<< Updated upstream
         x = self.avgpool(x)
         x = torch.flatten(x, 1) # flatten all dimensions except batch
         x = self.fc(x)
@@ -169,3 +190,12 @@ if __name__ == "__main__":
     torch.save(net.state_dict(), PATH)
 
 torchvision.models.resnet18()
+=======
+        x = self.conv4_1(x)
+        x = self.conv4_2(x)
+
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1) # flatten all dimensions except batch
+        x = self.fc(x)
+        return x
+>>>>>>> Stashed changes

@@ -8,6 +8,7 @@ import torch.nn.functional as F
 from typing import Optional
 import torch.optim as optim
 
+<<<<<<< Updated upstream
 
 if torch.cuda.is_available():
     device = torch.device('cuda')
@@ -30,6 +31,8 @@ testset = torchvision.datasets.CIFAR10(root='/codes/DeepLearning/DL/CNN/data', t
 testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
                                          shuffle=False, num_workers=2)
 
+=======
+>>>>>>> Stashed changes
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
@@ -118,6 +121,7 @@ class SE_ResNet(nn.Module):
         
         x = self.fc(x)
         
+<<<<<<< Updated upstream
         return x
 
 net = SE_ResNet()
@@ -184,3 +188,6 @@ if __name__ == "__main__":
     torch.save(net.state_dict(), PATH)
 
 torchvision.models.resnet18()
+=======
+        return x
+>>>>>>> Stashed changes
