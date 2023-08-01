@@ -40,9 +40,9 @@ Net(
 
 首先在损失值和精确度曲线上能直观发现，迭代训练10次后模型的损失值和精确度曲线没有完全收敛，所以最直观的改进就是增大epoch，因为MNIST数据集很小，模型容易出现过拟合，所以适当增大尝试epoch=15，结果如下：
 
-![image-20230610153023453](E:\DeepLearning\DL\FFN\img\image-20230610153023453.png)
+![image-20230610153023453](img\image-20230610153023453.png)
 
-![image-20230610153054086](E:\DeepLearning\DL\FFN\img\image-20230610153054086.png)
+![image-20230610153054086](img\image-20230610153054086.png)
 
 **最终模型在测试集上的准确率为97.58%，可见模型在epoch=10时没有完全收敛，增大epoch可以提升准确率。**
 
@@ -52,13 +52,13 @@ Net(
 
 **Adam(lr=0.01):**
 
-<img src="E:\DeepLearning\DL\FFN\img\image-20230610154404231.png" alt="image-20230610154404231" style="zoom:67%;" />
+<img src="img\image-20230610154404231.png" alt="image-20230610154404231" style="zoom:67%;" />
 
 使用Adam后我们发现，一开始收敛速度要快于SGD很多，然而后续的训练阶段难以优化并达到最优解，是因为Adam使用自适应学习率，可以根据每个参数的梯度自动调整学习率。然而，如果学习率设置得太高，可能会导致训练过程中的震荡或不稳定。这可能使得模型无法收敛到最优解，而是在局部最小值附近徘徊，所以我们降低初始化学习率：
 
 **Adam(lr=0.001):**
 
-<img src="C:\Users\LEGION\AppData\Roaming\Typora\typora-user-images\image-20230610155101862.png" alt="image-20230610155101862" style="zoom:67%;" />
+<img src="img\image-20230610155101862.png" alt="image-20230610155101862" style="zoom:67%;" />
 
 **可见使用Adam优化器在降低初始化化学习率后，模型收敛速度更快了，而且震荡现象明显减小，最终在测试集上的准确率为97.76%**
 
@@ -104,7 +104,7 @@ Net(
 )
 ```
 
-<img src="E:\DeepLearning\DL\FFN\img\image-20230610162635145.png" alt="image-20230610162635145" style="zoom:67%;" />
+<img src="img\image-20230610162635145.png" alt="image-20230610162635145" style="zoom:67%;" />
 
 **最终四层MLP结构在测试集上准确率为98.22%**
 
@@ -214,7 +214,7 @@ model = MLPMixer(image_size=28, channels=1, patch_size=7, dim=32, depth=3, token
 
 **实验结果：**
 
-<img src="E:\DeepLearning\DL\FFN\img\image-20230610190646164.png" alt="image-20230610190646164" style="zoom:67%;" />
+<img src="img\image-20230610190646164.png" alt="image-20230610190646164" style="zoom:67%;" />
 
 
 

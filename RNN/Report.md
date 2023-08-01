@@ -16,11 +16,11 @@ RNN(
 
 **实验结果：**
 
-<img src="E:\DeepLearning\DL\RNN\img\image-20230610215055180.png" alt="image-20230610215055180" style="zoom:67%;" />
+<img src="img\image-20230610215055180.png" alt="image-20230610215055180" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\RNN\img\image-20230610215117033.png" alt="image-20230610215117033" style="zoom:67%;" />
+<img src="img\image-20230610215117033.png" alt="image-20230610215117033" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\RNN\img\image-20230610215136034.png" alt="image-20230610215136034" style="zoom:67%;" />
+<img src="img\image-20230610215136034.png" alt="image-20230610215136034" style="zoom:67%;" />
 
 最终准确率在63%左右，在预测矩阵图中能发现，部分语言的预测准确度很高，但一部分准确率很低，如German、Czech、Spanish等，导致整体准确率不高。
 
@@ -89,11 +89,11 @@ class LSTM(nn.Module):
         return h0, c0
 ```
 
-<img src="E:\DeepLearning\DL\RNN\img\image-20230610212306252.png" alt="image-20230610212306252" style="zoom:67%;" />
+<img src="img\image-20230610212306252.png" alt="image-20230610212306252" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\RNN\img\image-20230610212318603.png" alt="image-20230610212318603" style="zoom:67%;" />
+<img src="img\image-20230610212318603.png" alt="image-20230610212318603" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\RNN\img\image-20230610212403678.png" alt="image-20230610212403678" style="zoom:67%;" />
+<img src="img\image-20230610212403678.png" alt="image-20230610212403678" style="zoom:67%;" />
 
 ## GRU实现
 
@@ -155,11 +155,11 @@ class GRU(nn.Module):
         return h0
 ```
 
-<img src="E:\DeepLearning\DL\RNN\img\image-20230610232357844.png" alt="image-20230610232357844" style="zoom:67%;" />
+<img src="img\image-20230610232357844.png" alt="image-20230610232357844" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\RNN\img\image-20230610232427038.png" alt="image-20230610232427038" style="zoom:67%;" />
+<img src="img\image-20230610232427038.png" alt="image-20230610232427038" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\RNN\img\image-20230610232456113.png" alt="image-20230610232456113" style="zoom:67%;" />
+<img src="img\image-20230610232456113.png" alt="image-20230610232456113" style="zoom:67%;" />
 
 
 

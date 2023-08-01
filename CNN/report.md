@@ -15,9 +15,9 @@ Net(
 
 ### 训练结果：
 
-<img src="E:\DeepLearning\DL\CNN\img\image-20230620103954044.png" alt="image-20230620103954044" style="zoom:67%;" />
+<img src="img\image-20230620103954044.png" alt="image-20230620103954044" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\CNN\img\image-20230620104013354.png" alt="image-20230620104013354" style="zoom:67%;" />
+<img src="img\image-20230620104013354.png" alt="image-20230620104013354" style="zoom:67%;" />
 
 **最终在测试集上准确率为63.48%**
 
@@ -105,9 +105,9 @@ class ResNet(nn.Module):
 
 ### 训练结果：
 
-<img src="E:\DeepLearning\DL\CNN\img\image-20230612215057648.png" alt="image-20230612215057648" style="zoom:67%;" />
+<img src="img\image-20230612215057648.png" alt="image-20230612215057648" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\CNN\img\image-20230612215127497.png" alt="image-20230612215127497" style="zoom:67%;" />
+<img src="img\image-20230612215127497.png" alt="image-20230612215127497" style="zoom:67%;" />
 
 **最终在测试集上准确率为90.32%**
 
@@ -219,9 +219,9 @@ class SE_ResNet(nn.Module):
 
 ### 训练结果：
 
-<img src="E:\DeepLearning\DL\CNN\img\image-20230612220215520.png" alt="image-20230612220215520" style="zoom:67%;" />
+<img src="img\image-20230612220215520.png" alt="image-20230612220215520" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\CNN\img\image-20230612220228032.png" alt="image-20230612220228032" style="zoom:67%;" />
+<img src="img\image-20230612220228032.png" alt="image-20230612220228032" style="zoom:67%;" />
 
 **最终在测试集上准确率为91.41%**
 
@@ -350,9 +350,9 @@ class Res2Net(nn.Module):
 
 ### 训练结果：
 
-<img src="E:\DeepLearning\DL\CNN\img\image-20230612225644093.png" alt="image-20230612225644093" style="zoom:67%;" />
+<img src="img\image-20230612225644093.png" alt="image-20230612225644093" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\CNN\img\image-20230612225705247.png" alt="image-20230612225705247" style="zoom:67%;" />
+<img src="img\image-20230612225705247.png" alt="image-20230612225705247" style="zoom:67%;" />
 
 **最终在测试集上正确率为89.32%**
 
@@ -467,9 +467,9 @@ class DenseNet(nn.Module):
 
 ### 训练结果：
 
-<img src="E:\DeepLearning\DL\CNN\img\image-20230620101524037.png" alt="image-20230620101524037" style="zoom:67%;" />
+<img src="img\image-20230620101524037.png" alt="image-20230620101524037" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\CNN\img\image-20230620101544761.png" alt="image-20230620101544761" style="zoom:67%;" />
+<img src="img\image-20230620101544761.png" alt="image-20230620101544761" style="zoom:67%;" />
 
 **最终在测试集上正确率为90.90%**
 

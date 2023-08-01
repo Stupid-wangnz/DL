@@ -21,13 +21,13 @@ Generator(
 
 **判断器对真图像和假图像的判别能力：**
 
-<img src="E:\DeepLearning\DL\GAN\img\image-20230620170532495.png" alt="image-20230620170532495" style="zoom:67%;" />
+<img src="img\image-20230620170532495.png" alt="image-20230620170532495" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\GAN\img\image-20230620170644470.png" alt="image-20230620170644470" style="zoom:67%;" />
+<img src="img\image-20230620170644470.png" alt="image-20230620170644470" style="zoom:67%;" />
 
 **判别器和生成器的损失值：**
 
-<img src="E:\DeepLearning\DL\GAN\img\image-20230620170736330.png" alt="image-20230620170736330" style="zoom:67%;" />
+<img src="img\image-20230620170736330.png" alt="image-20230620170736330" style="zoom:67%;" />
 
 可以看到GAN在训练过程中判别器和生成器的损失值都有较大抖动，可见对抗网络较难训练，但也能发现总体趋势是判别器损失值变大，而生成器损失值变小。
 
@@ -35,7 +35,7 @@ Generator(
 
 随机自定义一组随机数生成8张图片结果：
 
-![image-20230620173956942](E:\DeepLearning\DL\GAN\img\image-20230620173956942.png)
+![image-20230620173956942](img\image-20230620173956942.png)
 
 可以见到生成图像较为模糊。有大致轮廓但细致内容不清楚。
 
@@ -43,7 +43,7 @@ Generator(
 
 在这里，没三行图像为一组，每一组分别控制第5、25、45、65、85个随机数，分别控制为-3、0、3，观察结果：
 
-<img src="E:\DeepLearning\DL\GAN\img\image-20230620173804814.png" alt="image-20230620173804814" style="zoom:67%;" />
+<img src="img\image-20230620173804814.png" alt="image-20230620173804814" style="zoom:67%;" />
 
 **第一组图像可见：调整第5个随机数的时候，主要控制了图像的上部分的内容，小于0时上部分为空，大于0时上部分内容逐渐明亮；**
 
@@ -118,11 +118,11 @@ class CNNGenerator(nn.Module):
 
 ### 训练结果：
 
-<img src="E:\DeepLearning\DL\GAN\img\img.png" alt="img" style="zoom:67%;" />
+<img src="img\img.png" alt="img" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\GAN\img\img1.png" alt="img" style="zoom:67%;" />
+<img src="img\img1.png" alt="img" style="zoom:67%;" />
 
-<img src="E:\DeepLearning\DL\GAN\img\img2.png" alt="img" style="zoom:67%;" />
+<img src="img\img2.png" alt="img" style="zoom:67%;" />
 
 对比生成器和判别器的损失函数可以发现，判别器的损失值一直较小，而生成器损失在震荡中逐渐的增大，可见GAN还是非常难以训练。
 
@@ -130,11 +130,11 @@ class CNNGenerator(nn.Module):
 
 可见，DCGAN生成的图像更加清晰，细节更加具体，但是有部分图像完全扭曲，可能是迭代次数太少了。
 
-![img](E:\DeepLearning\DL\GAN\img\img3.png)
+![img](img\img3.png)
 
 **针对自定义的100个随机数，自由挑选5个随机数，查看调整每个随机数时，生成图像的变化：**
 
-<img src="E:\DeepLearning\DL\GAN\img\image-20230620213820299.png" alt="image-20230620213820299" style="zoom:67%;" />
+<img src="img\image-20230620213820299.png" alt="image-20230620213820299" style="zoom:67%;" />
 
 对比于简单的GAN网络，DCGAN生成的图像更加完整且清晰。可以清楚的发现，和前面分析的GAN一样，同样是由不同随机数来控制不同区域，从而组合生成一幅完整的图像，但是DCGAN不同随机数的影响更大。
 
